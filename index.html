@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ការទស្សន៍ទាយ AI – ដាក់ប្រាក់</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .console-box {
+      font-family: monospace;
+      background-color: #1a1a1a;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 20px #00ff88;
+      color: #00ff88;
+      height: 250px;
+      overflow-y: auto;
+    }
+    .loading-screen {
+      font-family: monospace;
+      background: #000;
+      color: #00ff88;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      z-index: 50;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    .hidden-screen { display: none; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <div id="loading" class="loading-screen">
+    <p>កំពុងផ្ទុក... សូមរង់ចាំខណៈពេលដែលយើងរៀបចំបទពិសោធន៍របស់អ្នក។</p>
+  </div>
+  <div id="mainContent" class="hidden-screen">
+    <header class="w-full bg-gray-800 p-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-green-400">ការទស្សន៍ទាយ AI 1xBet</h1>
+      <nav class="space-x-4">
+        <a href="#how" class="hover:text-green-400">របៀបដែលវាដំណើរការ</a>
+        <a href="#games" class="hover:text-green-400">ហ្គេម</a>
+        <a href="#start" class="hover:text-green-400">ចាប់ផ្តើម</a>
+      </nav>
+    </header>
+    <section class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+      <h2 class="text-3xl md:text-5xl font-bold mb-6">
+        រកប្រាក់ពិតប្រាកដជាមួយនឹងការទស្សន៍ទាយហ្គេម AI
+      </h2>
+      <div class="mb-4 text-lg font-semibold text-yellow-300">
+        👋 សូមស្វាគមន៍មកកាន់សេវាកម្មផ្លូវការរបស់ <span class="text-green-400">Vireak Mony</span>!
+      </div>
+      <p class="max-w-xl mb-8 text-gray-300">
+        ចូលរួមជាមួយអ្នកប្រើប្រាស់រាប់ពាន់នាក់ដែលទទួលបានប្រាក់ចំណេញជាមួយ AI ដ៏ឆ្លាតវៃរបស់យើងនៅក្នុងហ្គេម Aviator, Mines និង Penalty។ ភាពត្រឹមត្រូវ 98%, ការទស្សន៍ទាយពេលវេលាជាក់ស្តែង និងការដកប្រាក់ភ្លាមៗ!
+      </p>
+      <!-- ID input for connection -->
+      <input id="userId" type="text" placeholder="បញ្ចូលលេខសម្គាល់ (ID) 1xBet របស់អ្នក" class="bg-gray-700 text-white p-3 rounded-md mb-4" />
+      <button id="connectButton" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-xl text-lg transition">ភ្ជាប់គណនី</button>
+      <!-- Success message -->
+      <div id="connectionSuccess" class="hidden text-green-400 font-bold mt-6">
+        <p>លេខសម្គាល់គណនី៖ <span id="accountIdDisplay">1234567890</span> បានភ្ជាប់ដោយជោគជ័យ!</p>
+        <p>ស្ថានភាព៖ សកម្ម | ភាពត្រឹមត្រូវនៃការទស្សន៍ទាយ 100% | ក្បួនដោះស្រាយ AI ត្រូវបានវិភាគ</p>
+        <button id="getSignalButton" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-xl text-lg transition mt-4">ទទួលសញ្ញា</button>
+      </div>
+      <!-- Error message for deposit + PROMOCODE block -->
+      <div id="errorBox" class="hidden bg-red-600 p-6 rounded-xl max-w-md mx-auto mt-6">
+        <h2 class="text-xl font-bold mb-2">⚠️ រកមិនឃើញប្រាក់បញ្ញើ</h2>
+        <p class="mb-4">មើលទៅសមតុល្យរបស់អ្នកគឺទទេ។ សូមធ្វើការដាក់ប្រាក់យ៉ាងហោចណាស់ <strong>0 KHR </strong> ដើម្បីដោះសោការចូលប្រើសញ្ញា និងចាប់ផ្តើមបង្កើតប្រាក់ចំណេញ។</p>
+        <a href="https://reffpa.com/L?tag=d_5897748m_45853c_&site=5897748&ad=45853&r=registration" target="_blank" id="depositButton" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition">
+          ដាក់ប្រាក់ឥឡូវនេះនៅ 1xBet
+        </a>
+        <!-- Promo code -->
+        <div class="mt-6 bg-red-800 text-white p-4 rounded-lg font-bold text-center">
+          <div class="mb-1 text-lg">លេខកូដប្រូម៉ូសិនរបស់អ្នក៖ <span class="bg-black p-1 rounded text-green-400"></span></div>
+          <div>កុំភ្លេចចុះឈ្មោះ <span class="underline">តែជាមួយ</span> លេខកូដនេះប៉ុណ្ណោះ ដើម្បីទទួលបានសិទ្ធិពេញលេញប្រើប្រាស់មុខងារទាំងអស់!</div>
+        </div>
+      </div>
+    </section>
+    <!-- Winners -->
+    <section class="bg-gray-800 py-12 px-6 text-center">
+      <h3 class="text-2xl font-bold text-green-400 mb-6">អ្នកឈ្នះថ្ងៃនេះ (KHR)</h3>
+      <div class="grid md:grid-cols-2 gap-4 text-left max-w-4xl mx-auto text-sm text-green-300">
+      <p>👤 អ្នកប្រើប្រាស់: 1218473422 – 22,795,200 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 9912384741 – 19,710,000 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 3099234822 – 12,708,000 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 1187339121 – 9,000,000 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 4412900113 – 11,565,000 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 8283721091 – 16,596,000 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 7751937742 – 9,634,500 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 5554921811 – 8,397,000 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 1983238742 – 7,200,000 KHR</p>
+      <p>👤 អ្នកប្រើប្រាស់: 3377749301 – 6,489,000 KHR</p>
+      </div>
+    </section>
+    <!-- Supported games -->
+    <section id="games" class="bg-gray-800 py-12 px-6 text-center">
+      <h3 class="text-2xl font-bold text-green-400 mb-6">ហ្គេមដែលគាំទ្រ</h3>
+      <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="bg-gray-700 p-6 rounded-xl shadow-lg">
+          <h4 class="text-xl font-bold mb-2">🎮 Aviator</h4>
+          <p class="text-gray-300">ទស្សន៍ទាយពេលណាត្រូវដកប្រាក់មុនពេលយន្តហោះហោះឡើង។ AI របស់យើងរកឃើញគំរូទិន្នន័យជាក់ស្តែង។</p>
+        </div>
+        <div class="bg-gray-700 p-6 rounded-xl shadow-lg">
+          <h4 class="text-xl font-bold mb-2">💣 Mines</h4>
+          <p class="text-gray-300">ចៀសវាងគ្រាប់បែក យកប្រាក់ចំណេញរបស់អ្នក។ ប្រព័ន្ធរបស់យើងស្វែងរកផ្លូវដែលមានហានិភ័យទាប ដើម្បីទទួលបានប្រាក់ចំណូលអតិបរមា។</p>
+        </div>
+        <div class="bg-gray-700 p-6 rounded-xl shadow-lg">
+          <h4 class="text-xl font-bold mb-2">🥅 Penalty</h4>
+          <p class="text-gray-300">ដឹងពីកន្លែងដែលត្រូវទាត់ ឬលោត។ យកឈ្នះអ្នកចាំទីជាមួយនឹងការទស្សន៍ទាយផ្អែកលើទិន្នន័យ។</p>
+        </div>
+      </div>
+    </section>
+    <!-- How it works -->
+    <section id="how" class="bg-gray-900 py-12 px-6 text-center">
+      <h3 class="text-2xl font-bold text-green-400 mb-6">របៀបដែលវាដំណើរការ</h3>
+      <div class="max-w-3xl mx-auto space-y-4 text-gray-300">
+        <p>📡 AI របស់យើងវិភាគទិន្នន័យហ្គេមបន្តផ្ទាល់ និងប្រវត្តិហ្គេម 24 ម៉ោងលើ 7 ថ្ងៃ។</p>
+        <p>💡 កំណត់អត្តសញ្ញាណគំរូដែលអាចបង្កើតប្រាក់ចំណេញជាប់លាប់។</p>
+        <p>📲 អ្នកទទួលបានសញ្ញាជាក់ស្តែងដែលគួរឱ្យទុកចិត្តដោយផ្ទាល់ទៅកាន់ឧបករណ៍របស់អ្នក។</p>
+      </div>
+    </section>
+    <section class="bg-black py-12 px-6 text-center">
+      <h3 class="text-xl font-bold text-green-400 mb-4">[ កុងសូល - កំណត់ហេតុត្រួតពិនិត្យ ]</h3>
+      <div class="console-box max-w-3xl mx-auto text-left" id="console">
+        <p>[INFO] សេវាកម្មទស្សន៍ទាយកំពុងសកម្ម ✅</p>
+      </div>
+    </section>
+    <footer class="text-center text-gray-500 text-sm py-6">
+      © 2025 ការទស្សន៍ទាយ AI។ មិនមានទំនាក់ទំនងជាមួយ 1xBet ទេ។ សូមប្រើប្រាស់ដោយការទទួលខុសត្រូវ។
+    </footer>
+  </div>
+  <script>
+    setTimeout(() => {
+      document.getElementById("loading").classList.add("hidden-screen");
+      document.getElementById("mainContent").classList.remove("hidden-screen");
+    }, 3000);
+
+    document.getElementById("connectButton").addEventListener("click", () => {
+      const userId = document.getElementById("userId").value;
+      if (userId) {
+        document.getElementById("accountIdDisplay").innerText = userId;
+        document.getElementById("connectionSuccess").classList.remove("hidden");
+        document.getElementById("errorBox").classList.add("hidden");
+      }
+    });
+
+    document.getElementById("getSignalButton").addEventListener("click", () => {
+      document.getElementById("errorBox").classList.remove("hidden");
+    });
+  </script>
+</body>
+  </html>
